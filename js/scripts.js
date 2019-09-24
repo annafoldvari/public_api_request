@@ -14,13 +14,19 @@ $(function(){
 
       $('body').on('click', '.modal-close-btn', removeModalDiv);
 
+      $('body').on('click', '.modal-prev', function(event) {
+        updateModalDiv(event, -1);
+      });
+
+      $('body').on('click', '.modal-next', function(event) {
+        updateModalDiv(event, 1);
+      });
+
   });
 
   function buildUpGallery(data) {
 
     window.data = data;
-
-    console.log(data);
 
     let galleryDiv = document.getElementById('gallery');
 
@@ -54,6 +60,7 @@ function showModalDiv(event) {
 
   let modalContainerDiv = document.createElement('div');
   modalContainerDiv.className= 'modal-container';
+  modalContainerDiv.setAttribute('data-id', userIndex);
   
   let modalDiv = document.createElement('div');
   modalDiv.className = "modal";
@@ -93,3 +100,38 @@ function removeModalDiv(event) {
   bodyElement.removeChild(modalContainerDiv);
 
 }
+
+function updateModalDiv(event, diff) {
+
+  let parentDiv = event.target.closest('.modal-container');
+
+  let userIndex = parseInt(parentDiv.getAttribute('data-id'));
+
+  let modalInfoContainer = document.querySelector('.modal-info-container');
+  
+  let img = modalInfoContainer.children[0];
+  let name = modalInfoContainer.children[1];
+  let email = modalInfoContainer.children[2];
+  let city = modalInfoContainer.children[3];
+  let phone = modalInfoContainer.children[5];
+  let address = modalInfoContainer.children[6];
+  let dob = modalInfoContainer.children[7];
+
+  if (diff === -1 && userIndex === 0) { 
+    return
+  } else if (diff === 1 && userIndex === 11) {
+    return
+  } else {
+    parentDiv.setAttribute('data-id', userIndex+diff);
+    
+    img.setAttribute('src', window.data.results[userIndex+diff].picture.large);
+    name.textContent = `${window.data.results[userIndex+diff].name.first} ${window.data.results[userIndex+diff].name.last}`;
+    email.textContent = window.data.results[userIndex+diff].email;
+    city.textContent = window.data.results[userIndex+diff].location.city;
+    phone.textContent = window.data.results[userIndex+diff].phone;
+    address.textContent = `${window.data.results[userIndex+diff].location.street}, ${window.data.results[userIndex+diff].location.city}, ${window.data.results[userIndex+diff].location.state} ${window.data.results[userIndex+diff].location.postcode}`;
+    dob.textContent = window.data.results[userIndex+diff].dob.date.slice(0,-10);
+  }
+
+}
+
