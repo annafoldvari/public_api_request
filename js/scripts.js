@@ -3,7 +3,7 @@ let data;
 $(function(){
 
     $.ajax({
-        url: 'https://randomuser.me/api/?results=12',
+        url: 'https://randomuser.me/api/?nat=us,nz,gb&results=12',
         dataType: 'json',
         success: function(data) {
           buildUpGallery(data);
@@ -21,6 +21,10 @@ $(function(){
       $('body').on('click', '.modal-next', function(event) {
         updateModalDiv(event, 1);
       });
+
+      buildUpSearch();
+
+      $('body').on('click', '.search-submit', doSearch);
 
   });
 
@@ -133,5 +137,67 @@ function updateModalDiv(event, diff) {
     dob.textContent = window.data.results[userIndex+diff].dob.date.slice(0,-10);
   }
 
+}
+
+function buildUpSearch() {
+
+  let searchDiv = document.querySelector('.search-container');
+
+  let searchHtml = `<form action="#" method="get">
+  <input type="search" id="search-input" class="search-input" placeholder="Search...">
+  <input type="submit" value="&#x1F50D;" id="serach-submit" class="search-submit">
+</form>`
+
+  searchDiv.innerHTML = searchHtml;
+}
+
+function doSearch() {
+  let searchString = document.getElementById('search-input').value.toLowerCase();
+
+  let nameArray = [];
+  
+  for (let i = 0; i < window.data.results.length; i++) {
+    let user = window.data.results[i];
+    let name = `${user.name.first} ${user.name.last}`;
+    nameArray.push(name);
+  }
+
+  let resultIndexes = [];
+  for (let i = 0; i < nameArray.length; i++) {
+    if (nameArray[i].includes(searchString)) {
+      resultIndexes.push(i);
+    }
+  }
+  console.log(resultIndexes);
+
+  showResultCards(resultIndexes);
+}
+
+function showResultCards(resultIndexes) {
+
+  let cards = document.querySelectorAll('.card');
+
+  if (resultIndexes.length > 0) {
+
+    for (let i = 0; i < cards.length; i++) {
+      let card = cards[i];
+      card.removeAttribute('data-result');
+      for (let j = 0; j < resultIndexes.length; j++) {
+        let resultIndex = resultIndexes[j];
+        if (card.getAttribute('data-id') === resultIndex.toString()) {
+          card.setAttribute('data-result', 'true');
+        }  
+      }
+    }
+
+    for (let i = 0; i < cards.length; i++) {
+      let card = cards[i];
+      if (card.getAttribute('data-result') === 'true') {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  }  
 }
 
