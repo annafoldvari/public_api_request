@@ -1,4 +1,4 @@
-// Global data variables stores the result of the API request
+// Global data variable stores the result of the API request
 let data;
 
 //Jquery starting function
@@ -44,17 +44,17 @@ $(function(){
     let galleryHtml = '';
 
     for (let i = 0; i < data.results.length; i++ ) { 
-    let user = data.results[i];
-    galleryHtml += `<div class="card" data-id="${i}">
-    <div class="card-img-container">
-        <img class="card-img" src="${user.picture.medium}" alt="profile picture">
-    </div>
-    <div class="card-info-container">
-        <h3 id="name" class="card-name cap">${user.name.first} ${user.name.last}</h3>
-        <p class="card-text">${user.email}</p>
-        <p class="card-text cap">${user.location.city}</p>
-    </div>
-    </div>`
+      let user = data.results[i];
+      galleryHtml += `<div class="card" data-id="${i}">
+      <div class="card-img-container">
+          <img class="card-img" src="${user.picture.medium}" alt="profile picture">
+      </div>
+      <div class="card-info-container">
+          <h3 id="name" class="card-name cap">${user.name.first} ${user.name.last}</h3>
+          <p class="card-text">${user.email}</p>
+          <p class="card-text cap">${user.location.city}</p>
+      </div>
+      </div>`
     }
     galleryDiv.innerHTML = galleryHtml;
 }
@@ -64,7 +64,7 @@ $(function(){
 function showModalDiv(event) {
   let userIndex;
 
-  if (event.target.classList[0] === 'card') {
+  if (event.target.className === 'card') {
     userIndex = event.target.getAttribute('data-id');
   } else {
     let parentCard = event.target.closest('.card');
@@ -80,16 +80,18 @@ function showModalDiv(event) {
 
   modalContainerDiv.appendChild(modalDiv);
 
+  let current_user = window.data.results[userIndex] 
+
   let innerModal = `<button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
   <div class="modal-info-container">
-      <img class="modal-img" src="${window.data.results[userIndex].picture.large}" alt="profile picture">
-      <h3 id="name" class="modal-name cap">${window.data.results[userIndex].name.first} ${window.data.results[userIndex].name.last}</h3>
-      <p class="modal-text">${window.data.results[userIndex].email}</p>
-      <p class="modal-text cap">${window.data.results[userIndex].location.city}</p>
+      <img class="modal-img" src="${current_user.picture.large}" alt="profile picture">
+      <h3 id="name" class="modal-name cap">${current_user.name.first} ${current_user.name.last}</h3>
+      <p class="modal-text">${current_user.email}</p>
+      <p class="modal-text cap">${current_user.location.city}</p>
       <hr>
-      <p class="modal-text">${window.data.results[userIndex].phone}</p>
-      <p class="modal-text">${window.data.results[userIndex].location.street}, ${window.data.results[userIndex].location.city}, ${window.data.results[userIndex].location.state} ${window.data.results[userIndex].location.postcode}</p>
-      <p class="modal-text">Birthday: ${window.data.results[userIndex].dob.date.slice(0,-10)}</p>
+      <p class="modal-text">${current_user.phone}</p>
+      <p class="modal-text">${current_user.location.street}, ${current_user.location.city}, ${current_user.location.state} ${current_user.location.postcode}</p>
+      <p class="modal-text">Birthday: ${current_user.dob.date.slice(0,-10)}</p>
   </div>`
 
   modalDiv.innerHTML = innerModal;
@@ -113,7 +115,6 @@ function removeModalDiv(event) {
   let modalContainerDiv = document.querySelector('.modal-container');
 
   bodyElement.removeChild(modalContainerDiv);
-
 }
 
 //Updates the data on the modal window when next or previous buttons clicked
@@ -136,18 +137,20 @@ function updateModalDiv(event, diff) {
 
   if (diff === -1 && userIndex === 0) { 
     return
-  } else if (diff === 1 && userIndex === 11) {
+  } else if (diff === 1 && userIndex === window.data.results.length-1) {
     return
   } else {
     parentDiv.setAttribute('data-id', userIndex+diff);
     
-    img.setAttribute('src', window.data.results[userIndex+diff].picture.large);
-    name.textContent = `${window.data.results[userIndex+diff].name.first} ${window.data.results[userIndex+diff].name.last}`;
-    email.textContent = window.data.results[userIndex+diff].email;
-    city.textContent = window.data.results[userIndex+diff].location.city;
-    phone.textContent = window.data.results[userIndex+diff].phone;
-    address.textContent = `${window.data.results[userIndex+diff].location.street}, ${window.data.results[userIndex+diff].location.city}, ${window.data.results[userIndex+diff].location.state} ${window.data.results[userIndex+diff].location.postcode}`;
-    dob.textContent = window.data.results[userIndex+diff].dob.date.slice(0,-10);
+    let next_user = window.data.results[userIndex+diff];
+
+    img.setAttribute('src', next_user.picture.large);
+    name.textContent = `${next_user.name.first} ${next_user.name.last}`;
+    email.textContent = next_user.email;
+    city.textContent = next_user.location.city;
+    phone.textContent = next_user.phone;
+    address.textContent = `${next_user.location.street}, ${next_user.location.city}, ${next_user.location.state} ${next_user.location.postcode}`;
+    dob.textContent = next_user.dob.date.slice(0,-10);
   }
 
 }
