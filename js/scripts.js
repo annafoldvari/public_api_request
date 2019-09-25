@@ -1,6 +1,11 @@
+// Global data variables stores the result of the API request
 let data;
 
+//Jquery starting function
+
 $(function(){
+
+//Ajax API request
 
     $.ajax({
         url: 'https://randomuser.me/api/?nat=us,nz,gb&results=12',
@@ -10,23 +15,25 @@ $(function(){
         }
       });
   
-      $('#gallery').on('click', '.card', showModalDiv);
+    $('#gallery').on('click', '.card', showModalDiv);
 
-      $('body').on('click', '.modal-close-btn', removeModalDiv);
+    $('body').on('click', '.modal-close-btn', removeModalDiv);
 
-      $('body').on('click', '.modal-prev', function(event) {
-        updateModalDiv(event, -1);
-      });
+    $('body').on('click', '.modal-prev', function(event) {
+      updateModalDiv(event, -1);
+    });
 
-      $('body').on('click', '.modal-next', function(event) {
-        updateModalDiv(event, 1);
-      });
+    $('body').on('click', '.modal-next', function(event) {
+      updateModalDiv(event, 1);
+    });
 
-      buildUpSearch();
+    buildUpSearch();
 
-      $('body').on('click', '.search-submit', doSearch);
+    $('body').on('click', '.search-submit', doSearch);
 
   });
+
+  //Builds up the employee gallery from API response data
 
   function buildUpGallery(data) {
 
@@ -51,6 +58,8 @@ $(function(){
     }
     galleryDiv.innerHTML = galleryHtml;
 }
+
+//Builds up and shows the modal window
 
 function showModalDiv(event) {
   let userIndex;
@@ -96,6 +105,8 @@ function showModalDiv(event) {
   document.getElementsByTagName('body')[0].appendChild(modalContainerDiv);
 }
 
+// Removes the modal window when the x is clicked
+
 function removeModalDiv(event) {
 
   let bodyElement = document.getElementsByTagName('body')[0];
@@ -104,6 +115,8 @@ function removeModalDiv(event) {
   bodyElement.removeChild(modalContainerDiv);
 
 }
+
+//Updates the data on the modal window when next or previous buttons clicked
 
 function updateModalDiv(event, diff) {
 
@@ -151,6 +164,8 @@ function buildUpSearch() {
   searchDiv.innerHTML = searchHtml;
 }
 
+//Does the search in the names of the employees
+
 function doSearch() {
   let searchString = document.getElementById('search-input').value.toLowerCase();
 
@@ -172,6 +187,8 @@ function doSearch() {
 
   showResultCards(resultIndexes);
 }
+
+//Shows the result employee cards
 
 function showResultCards(resultIndexes) {
 
