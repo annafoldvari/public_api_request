@@ -176,7 +176,8 @@ function doSearch() {
   
   for (let i = 0; i < window.data.results.length; i++) {
     let user = window.data.results[i];
-    let name = `${user.name.first} ${user.name.last}`;
+
+    let name = `${user.name.first} ${user.name.last}`.toLowerCase();
     nameArray.push(name);
   }
 
@@ -186,7 +187,7 @@ function doSearch() {
       resultIndexes.push(i);
     }
   }
-  console.log(resultIndexes);
+
 
   showResultCards(resultIndexes);
 }
